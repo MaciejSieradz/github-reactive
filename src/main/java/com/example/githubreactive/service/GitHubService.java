@@ -27,7 +27,6 @@ public class GitHubService {
         return webClient
                 .get()
                 .uri("https://api.github.com/users/{username}/repos?type=all", username)
-                .header("Accept", "Bearer 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")
                 .exchangeToMono(clientResponse -> {
                     if (clientResponse.statusCode().isSameCodeAs(HttpStatusCode.valueOf(404))) {
                         return Mono.error(new UsernameNotFoundException(String.format("Username: %s not found.", username)));
@@ -53,7 +52,6 @@ public class GitHubService {
                     Mono<List<BranchDTO>> branchesMono = webClient
                             .get()
                             .uri("https://api.github.com/repos/{owner}/{repo}/branches", repositoryOwner, repositoryName)
-                            .header("Accept", "Bearer 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")
                             .retrieve()
                             .bodyToMono(String.class)
                             .map(this::createBranchesFromResponse);
