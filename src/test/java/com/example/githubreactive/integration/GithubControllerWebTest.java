@@ -1,6 +1,7 @@
 package com.example.githubreactive.integration;
 
 import com.example.githubreactive.dto.ErrorResponse;
+import com.example.githubreactive.dto.RepositoryDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
@@ -19,7 +20,8 @@ public class GithubControllerWebTest {
     public void shouldReturnRepos() {
         webTestClient.get().uri("/repositories/MaciejSieradz")
                 .exchange()
-                .expectStatus().isOk();
+                .expectStatus().isOk()
+                .expectBodyList(RepositoryDTO.class).hasSize(8);
     }
 
     @Test

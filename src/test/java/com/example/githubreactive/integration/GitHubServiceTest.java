@@ -18,7 +18,7 @@ class GitHubServiceTest {
 
         Flux<RepositoryDTO> repositories = service.getUserRepositories(username);
 
-        int expectedNumberOfRepositories = 7;
+        int expectedNumberOfRepositories = 8;
 
         Assertions.assertEquals(expectedNumberOfRepositories, repositories.count().block());
     }
