@@ -1,0 +1,56 @@
+[
+  {
+    "name": "flutter_inventory_app",
+    "onwerLogin": "Lokinado",
+    "branches": [
+      {
+        "name": "AC",
+        "commitSha": "91a790da623a65a7773a0067bae29c1a780e9194"
+      },
+      {
+        "name": "DBCreatingUpdating",
+        "commitSha": "b45dbc2b720673e3413a5169d570b8a859ea1570"
+      },
+      {
+        "name": "JL",
+        "commitSha": "8b1739227698cbff761f53fa2f19a2e222b2ca3e"
+      },
+      {
+        "name": "ListPage-LeftSection",
+        "commitSha": "6ce827090de567a76c1cf1d3163ea8734a929f40"
+      },
+      {
+        "name": "LoginScreen",
+        "commitSha": "92f7e95c8e479932d97722db70393936b734d670"
+      },
+      {
+        "name": "Markdown",
+        "commitSha": "b163069a29397ee5748894a561f1f28316c80314"
+      },
+      {
+        "name": "Sokulele",
+        "commitSha": "556896375b5ae1a4509822f6173f0c190cedf6fb"
+      },
+      {
+        "name": "connection-checker",
+        "commitSha": "b3dc08fcc81c2f640723f5f1bf773948607b5f79"
+      },
+      {
+        "name": "dziala2",
+        "commitSha": "114cbeb538ff8a6f69e35ac12326b4c9a7c05416"
+      },
+      {
+        "name": "full",
+        "commitSha": "6bff327f2158fcc2732df5aac5954bbcb3e64dd8"
+      },
+      {
+        "name": "main",
+        "commitSha": "640aa9274c9e53503d06f88040ccc5d27cf54366"
+      },
+      {
+        "name": "ostatniDobry",
+        "commitSha": "1bdfcea6f63a8b61146339d2c058fc7d1e50e677"
+      }
+    ]
+  }
+]

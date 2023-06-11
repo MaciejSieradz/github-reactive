@@ -5,10 +5,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
-public class GithubConfig
-{
+public class GithubConfig {
+
     @Bean
-    public WebClient webClient() {
-        return WebClient.create();
+    public WebClient.Builder webClient() {
+        return WebClient.builder().baseUrl("https://api.github.com");
     }
 }

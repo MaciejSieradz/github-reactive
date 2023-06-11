@@ -1,8 +1,13 @@
 package com.example.githubreactive.dto;
 
-/**
- * BranchDTO
- */
-public record BranchDTO(String name, String commitSHA) {
+import lombok.*;
+
+@AllArgsConstructor
+@Data
+@NoArgsConstructor
+public final class BranchDTO {
+
+    private String name;
+    private String commitSha;
 
 }
