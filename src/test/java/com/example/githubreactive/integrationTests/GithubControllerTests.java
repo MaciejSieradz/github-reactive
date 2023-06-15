@@ -1,79 +1,51 @@
 package com.example.githubreactive.integrationTests;
 
+import com.example.githubreactive.controller.GithubController;
+import com.example.githubreactive.dto.BranchDTO;
 import com.example.githubreactive.dto.RepositoryDTO;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.githubreactive.service.GitHubService;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import org.springframework.web.reactive.function.client.WebClient;
-import wiremock.org.apache.commons.io.IOUtils;
+import reactor.core.publisher.Flux;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Objects;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureWireMock(port = 6060)
-@AutoConfigureWebTestClient
+@WebFluxTest(GithubController.class)
 public class GithubControllerTests {
 
-    @Autowired
-    private WebTestClient webTestClient;
+    @MockBean
+    private GitHubService gitHubService;
 
     @Autowired
-    private WebClient.Builder webClient;
-
-    @BeforeEach
-    public void setWebClient() {
-        this.webClient.baseUrl("http://localhost:6060");
-    }
+    private WebTestClient testClient;
 
     @Test
-    void shouldReturRepos() throws IOException {
-        final var classLoader = getClass().getClassLoader();
+    void shouldReturnResponse() {
 
-        final var resourceName = "correct-response.json";
-        final var resourceBranchName = "correct-branch-response.json";
+        var repos = Flux.just(
+                new RepositoryDTO("repo-one", "owner-one",
+                        List.of(new BranchDTO("branch-one", "123"))),
+                new RepositoryDTO("repo-two", "owner-two",
+                        List.of(new BranchDTO("branch-one", "123"))));
 
-        final var githubRepos = new File(Objects.requireNonNull(classLoader.getResource(resourceName)).getFile());
-        final var githubBranches = new File(Objects.requireNonNull(classLoader.getResource(resourceBranchName)).getFile());
-        final var correctResponse = new File(Objects.requireNonNull(classLoader.getResource("expected-response.json")).getFile());
+        given(gitHubService.getUserRepositories(anyString())).willReturn(repos);
 
-        var responseGithubReposBody = IOUtils.toString(githubRepos.toURI(), StandardCharsets.UTF_8);
-        var responseGithubBranchBody = IOUtils.toString(githubBranches.toURI(), StandardCharsets.UTF_8);
-
-        var objectMapper = new ObjectMapper();
-
-        var expectedResponse = List.of(objectMapper.readValue(correctResponse, RepositoryDTO[].class));
-
-        stubFor(get(urlPathEqualTo("/users/MaciejSieradz/repos"))
-                .willReturn(aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(responseGithubReposBody)));
-
-        stubFor(get(urlMatching("/repos/Lokinado/flutter_inventory_app/branches"))
-                .willReturn(aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(responseGithubBranchBody)));
-
-        webTestClient.get().uri("/repositories/MaciejSieradz")
+        testClient.get()
+                .uri("/repositories/MaciejSieradz")
                 .exchange()
                 .expectStatus().isOk()
                 .expectBodyList(RepositoryDTO.class)
-                .consumeWith(response -> {
+                .consumeWith( response -> {
                     Assertions.assertThat(response.getResponseBody()).isNotNull();
-                    Assertions.assertThat(response.getResponseBody().hashCode()).isEqualTo(expectedResponse.hashCode());
+                    Assertions.assertThat(response.getResponseBody().hashCode()).isEqualTo(repos.collectList().block().hashCode());
                 });
+
     }
 }
